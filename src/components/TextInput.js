@@ -63,7 +63,7 @@ export default function TextInput() {
             if (content[content.length - 1].length >= sampleText[content.length - 1].length) {
                 var endTime = new Date();
                 var secondsTaken = (endTime.getTime() - startTime.getTime()) / 1000;
-                var cpm = (content.join(' ').length / secondsTaken) * 60;
+                var cpm = ((content.join(' ').length / secondsTaken) * 60) - 25;
                 var wpm = cpm / 5;
 
                 var errors = 0;
