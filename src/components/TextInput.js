@@ -26,13 +26,23 @@ export default function TextInput() {
     const [wordDict, setWordDict] = useState([])
     const [index, setIndex] = useState(0);
 
+    const [firstInput, setFirstInput] = useState(true);
+    const [startTime, setStartTime] = useState(0);
+    const [timeSet, setTimeSet] = useState(false);
+    const [result, setResult] = useState([]);
+
     const [displayText, setDisplayText] = useState(false);
+    const [displayResult, setDisplayResult] = useState(false);
 
     var onInput = () => {
         var word = inputRef.current.value;
+        if (firstInput) {
+            setStartTime(Date.now());
+            setFirstInput(false);
+        }
 
         // set last entry in content to be word
-        if (word.slice(-1) !== ' ') {
+        if (word.slice(-1) !== ' ' && word.slice(-1) !== '.') {
             var update = Object.assign([], content);
             if (update.length > 0 && update[update.length - 1].slice(-1) !== ' ') {
                 update[update.length - 1] = word.trimStart();
@@ -50,14 +60,34 @@ export default function TextInput() {
         }
     };
 
+    useEffect(() => {
+        if (content.length === sampleText.length && !timeSet && content[content.length - 1] !== undefined) {
+            if (content[content.length - 1].length >= sampleText[content.length - 1].length) {
+                var endTime = Date.now();
+                var secondsTaken = (endTime - startTime) / 1000;
+                var cpm = (content.join(' ').length / secondsTaken) * 60;
+                var wpm = cpm / 5;
+
+                setTimeSet(true);
+                setDisplayResult(true);
+                setResult([cpm, wpm]);
+            }
+        }
+    }, [content])
+
     var createText = () => {
         var text = [];
-        for (var i = 0; i < 100; i++) {
+        for (var i = 0; i < 2; i++) {
             text.push(wordDict[Math.floor(Math.random() * wordDict.length)]);
         }
+        text[text.length - 1] += '.';
         setContent([]);
+        setFirstInput(true);
+        setStartTime(0);
         setSampleText(text);
         setDisplayText(true);
+        setTimeSet(false);
+        setDisplayResult(false);
     };
 
     useEffect(() => {
@@ -76,6 +106,9 @@ export default function TextInput() {
         <div style={containerStyle}>
             <div style={containerStyle}>
                 <button onClick={createText} style={{margin: '10px'}}>Reset</button>
+                {
+                    <p>{displayResult ? "CPM: " + result[0] + ", WPM: " + result[1] : ''}</p>
+                }
                 <div style={{textAlign: 'center', fontSize: '30px', fontFamily: "Courier", fontWeight: "bold"}}>
                     {
                         displayText ?
@@ -118,9 +151,13 @@ export default function TextInput() {
                     }
                 </div>
             </div>
-            <div style={boxStyle}>
-                <input style={boxStyle} type="text" onChange={onInput} ref={inputRef} />
-            </div>
+            {
+                !displayResult ? (
+                    <div style={boxStyle}>
+                        <input style={boxStyle} type="text" onChange={onInput} ref={inputRef} />
+                    </div>
+                ) : ''
+            }
         </div>
     );
 }

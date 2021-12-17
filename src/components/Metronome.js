@@ -16,7 +16,7 @@ export default function Metronome() {
 
     const setTempo = (newTempo) => {
         _setTempo(newTempo);
-        setRate(newTempo * (1/12) * 1000);
+        setRate((1 / (newTempo / 14)) * 1000);
     }
 
     useEffect(() => {
@@ -45,7 +45,11 @@ export default function Metronome() {
                 <span style={{padding: '10px'}}>WPM</span>
             </div>
             <div className="startButton" style={childStyle}>
-                <button onClick={() => setEnable(!enable)}>{enable ? 'Stop Metronome' : 'Start Metronome'}</button>
+                <button onClick={() => {
+                        setEnable(!enable);
+                        setTempo(tempoRef.current.value);
+                    }
+                }>{enable ? 'Stop Metronome' : 'Start Metronome'}</button>
             </div>
         </div>
     )
