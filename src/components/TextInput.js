@@ -37,11 +37,10 @@ export default function TextInput() {
     var onInput = () => {
         var word = inputRef.current.value;
         if (firstInput) {
-            setStartTime(Date.now());
+            setStartTime(new Date());
             setFirstInput(false);
         }
 
-        // set last entry in content to be word
         if (word.slice(-1) !== ' ' && word.slice(-1) !== '.') {
             var update = Object.assign([], content);
             if (update.length > 0 && update[update.length - 1].slice(-1) !== ' ') {
@@ -51,7 +50,6 @@ export default function TextInput() {
             }
             setContent(update);
         } else if (word.trim().length >= sampleText[index].length) {
-            // append word to content and store
             inputRef.current.value = ''
             var update = Object.assign([], content);
             update[update.length - 1] = word.trimStart();
@@ -63,8 +61,8 @@ export default function TextInput() {
     useEffect(() => {
         if (content.length === sampleText.length && !timeSet && content[content.length - 1] !== undefined) {
             if (content[content.length - 1].length >= sampleText[content.length - 1].length) {
-                var endTime = Date.now();
-                var secondsTaken = (endTime - startTime) / 1000;
+                var endTime = new Date();
+                var secondsTaken = (endTime.getTime() - startTime.getTime()) / 1000;
                 var cpm = (content.join(' ').length / secondsTaken) * 60;
                 var wpm = cpm / 5;
 
@@ -83,7 +81,8 @@ export default function TextInput() {
                         errors += actual.length - typed.length;
                     }
                 }
-                var epm = errors / secondsTaken;
+
+                var epm = (errors / secondsTaken) * 60;
                 var correctedWpm = wpm - epm;
 
                 setTimeSet(true);
@@ -95,7 +94,7 @@ export default function TextInput() {
 
     var createText = () => {
         var text = [];
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 10; i++) {
             text.push(wordDict[Math.floor(Math.random() * wordDict.length)]);
         }
         text[text.length - 1] += '.';
@@ -133,8 +132,8 @@ export default function TextInput() {
                 <button onClick={createText} style={{margin: '10px'}}>New Test</button>
                 {
                     <div>
-                        <p style={textStyle}>{displayResult ? "Uncorrected CPM: " + Math.round(result[0]) + " Uncorrected WPM: " + Math.round(result[1]) : ''}</p>
-                        <p style={textStyle}>{displayResult ? "Corrected WPM: " + Math.round(result[2]) : ''}</p>
+                        <p style={textStyle}>{displayResult ? "Uncorrected CPM: " + Math.floor(result[0]) + " Uncorrected WPM: " + Math.floor(result[1]) : ''}</p>
+                        <p style={textStyle}>{displayResult ? "Corrected WPM: " + Math.floor(result[2]) : ''}</p>
                     </div>
                 }
                 <div style={textStyle}>

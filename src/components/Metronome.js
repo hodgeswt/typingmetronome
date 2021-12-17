@@ -16,7 +16,7 @@ export default function Metronome() {
 
     const setTempo = (newTempo) => {
         _setTempo(newTempo);
-        setRate((1 / (newTempo / 14)) * 1000);
+        setRate(((1 / (newTempo / 14)) * 1000) - 46);
     }
 
     useEffect(() => {
