@@ -15,6 +15,8 @@ export default function TextInput() {
         width: "85%",
         height: "50px",
         fontSize: "40px",
+        fontFamily: "Courier",
+        fontWeight: "bold",
         textAlign: "center",
     };
 
@@ -74,10 +76,9 @@ export default function TextInput() {
 
     return (
         <div style={containerStyle}>
-            {content.join(',')}
             <div style={containerStyle}>
                 <button onClick={createText} style={{margin: '10px'}}>Reset</button>
-                <div style={{textAlign: 'center', fontSize: '30px'}}>
+                <div style={{textAlign: 'center', fontSize: '30px', fontFamily: "Courier", fontWeight: "bold"}}>
                     {
                         displayText ?
                             sampleText.map((word, i) => {
