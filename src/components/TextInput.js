@@ -68,9 +68,27 @@ export default function TextInput() {
                 var cpm = (content.join(' ').length / secondsTaken) * 60;
                 var wpm = cpm / 5;
 
+                var errors = 0;
+                for (var i = 0; i < content.length; i++) {
+                    var typed = content[i].trim().split('');
+                    var actual = sampleText[i].trim().split('');
+
+                    for (var j = 0; j < typed.length; j++) {
+                        if (actual[j] === undefined || typed[j] !== actual[j]) {
+                            errors++;
+                        }
+                    }
+
+                    if (actual.length > typed.length) {
+                        errors += actual.length - typed.length;
+                    }
+                }
+                var epm = errors / secondsTaken;
+                var correctedWpm = wpm - epm;
+
                 setTimeSet(true);
                 setDisplayResult(true);
-                setResult([cpm, wpm]);
+                setResult([cpm, wpm, correctedWpm]);
             }
         }
     }, [content])
@@ -102,14 +120,24 @@ export default function TextInput() {
         createText();
     }, [wordDict]);
 
+    const textStyle = {
+        textAlign: 'center',
+        fontSize: '30px',
+        fontFamily: "Courier",
+        fontWeight: "bold"
+    }
+
     return (
         <div style={containerStyle}>
             <div style={containerStyle}>
-                <button onClick={createText} style={{margin: '10px'}}>Reset</button>
+                <button onClick={createText} style={{margin: '10px'}}>New Test</button>
                 {
-                    <p>{displayResult ? "CPM: " + result[0] + ", WPM: " + result[1] : ''}</p>
+                    <div>
+                        <p style={textStyle}>{displayResult ? "Uncorrected CPM: " + Math.round(result[0]) + " Uncorrected WPM: " + Math.round(result[1]) : ''}</p>
+                        <p style={textStyle}>{displayResult ? "Corrected WPM: " + Math.round(result[2]) : ''}</p>
+                    </div>
                 }
-                <div style={{textAlign: 'center', fontSize: '30px', fontFamily: "Courier", fontWeight: "bold"}}>
+                <div style={textStyle}>
                     {
                         displayText ?
                             sampleText.map((word, i) => {
