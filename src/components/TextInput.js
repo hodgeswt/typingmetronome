@@ -49,7 +49,7 @@ export default function TextInput() {
                 update.push(word);
             }
             setContent(update);
-        } else if (word.trim().length >= sampleText[index].length) {
+        } else {
             inputRef.current.value = ''
             var update = Object.assign([], content);
             update[update.length - 1] = word.trimStart();
@@ -94,7 +94,7 @@ export default function TextInput() {
 
     var createText = () => {
         var text = [];
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 100; i++) {
             text.push(wordDict[Math.floor(Math.random() * wordDict.length)]);
         }
         text[text.length - 1] += '.';
