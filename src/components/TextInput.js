@@ -32,23 +32,21 @@ export default function TextInput() {
         var word = inputRef.current.value;
 
         // set last entry in content to be word
-        if (word.trim() !== '') {
-            if (word.length > 0 && word.slice(-1) !== ' ') {
-                var update = Object.assign([], content);
-                if (update.length > 0 && update[update.length - 1].slice(-1) !== ' ') {
-                    update[update.length - 1] = word.trimStart();
-                } else {
-                    update.push(word);
-                }
-                setContent(update);
-            } else if (word.trim().length === sampleText[index].length) {
-                // append word to content and store
-                inputRef.current.value = ''
-                var update = Object.assign([], content);
+        if (word.slice(-1) !== ' ') {
+            var update = Object.assign([], content);
+            if (update.length > 0 && update[update.length - 1].slice(-1) !== ' ') {
                 update[update.length - 1] = word.trimStart();
-                setContent(update);
-                setIndex(index + 1);
+            } else {
+                update.push(word);
             }
+            setContent(update);
+        } else if (word.trim().length >= sampleText[index].length) {
+            // append word to content and store
+            inputRef.current.value = ''
+            var update = Object.assign([], content);
+            update[update.length - 1] = word.trimStart();
+            setContent(update);
+            setIndex(index + 1);
         }
     };
 
